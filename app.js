@@ -1,50 +1,25 @@
 var express = require("express")
 var app = express()
 var bodyParser = require("body-parser")
+app.set("view engine", "hbs")
 app.use(bodyParser.json()) //handles json post requests with AJAX
 app.use(bodyParser.urlencoded({ extended: true })) // allows form submissions
 
-var tasks = [
-    {id: 1,
-    body: "learn Rails",
-    completed: true},
-    {id: 2,
-    body: "learn Backbone",
-    completed: false},
-    {id: 3,
-    body: "learn Angular",
-    completed: false},
-    {id: 4,
-    body: "eat lunch",
-    completed: true},
-    {id: 5,
-    body: "get a job",
-    completed: false},
-]
+var tasksController = require("./controllers/tasksController");
+var path = require("path");
 
-app.get("/tasks", function(req, res){
-  res.json(tasks)
-})
+app.use("/app", express.static(path.join(__dirname + "/app")));
+app.get("/", function(request, response){
+  response.sendFile(__dirname + "/views/index.html");
+});
 
-// app.get("/tasks/:id", function(req, res){
-//     var id = req - 1
-//     res.json(tasks[id])
-// })
+app.get("/tasks", tasksController.index)
+app.get("/tasks/:id", tasksController.show)
+app.post("/tasks", tasksController.create)
+// app.put("/tasks/:id", tasksController.update)
+app.delete("/tasks/:id", tasksController.delete)
 
 
-// from solution
-app.get("/tasks/:id", function(req, res){
-  for(var i = 0; i < tasks.length; i++){
-    if(tasks[i].id == req.params.id){
-      res.json(tasks[i])
-    }
-  }
-})
-
-app.post("/tasks", function(req,res){
-  tasks.push(req.body)
-  res.json(req.body)
-})
 
 
 app.listen(4000, function(){
