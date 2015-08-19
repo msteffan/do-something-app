@@ -11,9 +11,7 @@ module.exports = {
     var newTask = task.create(req.body)
     res.json(newTask)
   },
-  // update: function(req, res){
-  //
-  // },
+
   delete: function(req, res){
     task.delete(req.params.id)
     res.json("")
